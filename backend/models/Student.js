@@ -68,5 +68,6 @@ const studentSchema = new mongoose.Schema(
 
 // Compound index on class and rollNumber to avoid duplicate rolls in same class
 studentSchema.index({ class: 1, rollNumber: 1 }, { unique: true });
+studentSchema.index({ user: 1 });
 
 module.exports = mongoose.model('Student', studentSchema);

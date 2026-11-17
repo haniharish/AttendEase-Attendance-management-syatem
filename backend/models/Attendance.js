@@ -81,5 +81,7 @@ attendanceSchema.pre('save', function (next) {
 
 // Index to prevent duplicate attendance logs for same class, subject and date
 attendanceSchema.index({ date: 1, class: 1, subject: 1 });
+attendanceSchema.index({ 'records.student': 1 });
+attendanceSchema.index({ faculty: 1, date: -1 });
 
 module.exports = mongoose.model('Attendance', attendanceSchema);
