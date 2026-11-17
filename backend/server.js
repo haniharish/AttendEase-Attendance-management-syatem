@@ -16,7 +16,7 @@ const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const app = express();
 
 // Middleware
-const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
+const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:5176';
 app.use(
   cors({
     origin: allowedOrigin,
@@ -50,7 +50,7 @@ app.use('/api/student', studentRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 6000;
 
 // Connect to DB and start listening if not in test mode
 if (process.env.NODE_ENV !== 'test') {

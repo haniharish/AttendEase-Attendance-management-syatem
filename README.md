@@ -94,10 +94,10 @@ npm install
 
 Configure your environment file `backend/.env`:
 ```env
-PORT=5000
+PORT=6000
 MONGODB_URI=mongodb://127.0.0.1:27017/attendease
 JWT_SECRET=attendease_production_super_secret_jwt_key_2026
-CLIENT_URL=http://localhost:5173
+CLIENT_URL=http://localhost:5176
 NODE_ENV=development
 ```
 
@@ -109,7 +109,7 @@ npm run seed
 Start the backend API:
 ```bash
 npm start
-# API server running on http://localhost:5000
+# API server running on http://localhost:6000
 ```
 
 ### 3. Frontend Setup
@@ -121,13 +121,13 @@ npm install
 
 Configure your environment file `frontend/.env`:
 ```env
-VITE_API_URL=http://localhost:5000/api
+VITE_API_URL=http://localhost:6000/api
 ```
 
 Start the frontend development server:
 ```bash
 npm run dev
-# Vite UI running on http://localhost:5173
+# Vite UI running on http://localhost:5176
 ```
 
 ---
