@@ -17,8 +17,16 @@ import SubjectManagementPage from '../pages/admin/SubjectManagementPage';
 import AttendanceReportsPage from '../pages/admin/AttendanceReportsPage';
 import AdminSettingsPage from '../pages/admin/AdminSettingsPage';
 
-// Other Role Dashboards (Future Parts 3 & 4)
+// Faculty Pages (Part 3)
 import FacultyDashboardPage from '../pages/dashboards/FacultyDashboardPage';
+import FacultyClassesPage from '../pages/faculty/FacultyClassesPage';
+import FacultySubjectsPage from '../pages/faculty/FacultySubjectsPage';
+import MarkAttendancePage from '../pages/faculty/MarkAttendancePage';
+import AttendanceHistoryPage from '../pages/faculty/AttendanceHistoryPage';
+import FacultyReportsPage from '../pages/faculty/FacultyReportsPage';
+import FacultyProfilePage from '../pages/faculty/FacultyProfilePage';
+
+// Other Role Dashboards (Future Part 4)
 import StudentDashboardPage from '../pages/dashboards/StudentDashboardPage';
 
 // Route Guards
@@ -122,13 +130,73 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Role-Protected Faculty Dashboard (Placeholder for Part 3) */}
+      {/* Role-Protected Faculty Routes (Part 3) */}
       <Route
         path="/faculty/dashboard"
         element={
           <ProtectedRoute>
             <RoleProtectedRoute allowedRoles={['faculty']}>
               <FacultyDashboardPage />
+            </RoleProtectedRoute>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/faculty/classes"
+        element={
+          <ProtectedRoute>
+            <RoleProtectedRoute allowedRoles={['faculty']}>
+              <FacultyClassesPage />
+            </RoleProtectedRoute>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/faculty/subjects"
+        element={
+          <ProtectedRoute>
+            <RoleProtectedRoute allowedRoles={['faculty']}>
+              <FacultySubjectsPage />
+            </RoleProtectedRoute>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/faculty/mark-attendance"
+        element={
+          <ProtectedRoute>
+            <RoleProtectedRoute allowedRoles={['faculty']}>
+              <MarkAttendancePage />
+            </RoleProtectedRoute>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/faculty/history"
+        element={
+          <ProtectedRoute>
+            <RoleProtectedRoute allowedRoles={['faculty']}>
+              <AttendanceHistoryPage />
+            </RoleProtectedRoute>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/faculty/reports"
+        element={
+          <ProtectedRoute>
+            <RoleProtectedRoute allowedRoles={['faculty']}>
+              <FacultyReportsPage />
+            </RoleProtectedRoute>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/faculty/profile"
+        element={
+          <ProtectedRoute>
+            <RoleProtectedRoute allowedRoles={['faculty']}>
+              <FacultyProfilePage />
             </RoleProtectedRoute>
           </ProtectedRoute>
         }

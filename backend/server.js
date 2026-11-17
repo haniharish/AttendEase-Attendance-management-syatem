@@ -9,6 +9,7 @@ dotenv.config();
 const { connectDB } = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const facultyRoutes = require('./routes/facultyRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -41,6 +42,7 @@ app.get('/api/health', (req, res) => {
 // Mount Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/faculty', facultyRoutes);
 
 // Error Handling Middleware
 app.use(notFound);

@@ -10,7 +10,57 @@
 
 AttendEase is an enterprise-grade, modern SaaS-style Student Attendance Management System developed using the MERN stack (MongoDB, Express, React, Node.js). 
 
-This repository contains the completed **Part 1 (Foundation & Authentication)** and **Part 2 (Admin Dashboard & Management System)**.
+This repository contains the completed **Part 1 (Foundation & Authentication)**, **Part 2 (Admin Dashboard & Management System)**, and **Part 3 (Faculty Dashboard & Attendance Management System)**.
+
+---
+
+## 🎓 Part 3 Scope & Delivered Features
+
+- **Three-Column Faculty Portal Layout**:
+  - Left navigation sidebar (`256px`): Dashboard, My Classes, My Subjects, Mark Attendance, Attendance History, Attendance Reports, Profile, Logout.
+  - Center main content: Flexible width, statistics cards, Recharts visualizations, interactive roll-call table.
+  - Right profile & quick-action sidebar (`320px`): Faculty profile summary, academic calendar widget, "Mark Roster Now" quick action, recent session ledger.
+- **Faculty Dashboard Overview** (`/faculty/dashboard`):
+  - 5 Core Metrics: Total Assigned Classes, Total Assigned Subjects, Students Under Faculty, Today's Sessions, Turnout Rate.
+  - Recharts 7-Day Attendance Trend Bar Chart (Present vs Late vs Absent breakdown).
+  - Assigned classes overview with quick action to mark attendance.
+  - Recent lecture attendance rosters marked by the faculty.
+- **My Classes Management** (`/faculty/classes`):
+  - View classes assigned strictly to the logged-in faculty member.
+  - Display Class name, Section, Academic year, Enrolled learners count, and assigned course tags.
+  - Search classes and filter by section.
+  - Quick action to launch attendance for each class.
+- **My Subjects Management** (`/faculty/subjects`):
+  - View courses assigned to the logged-in faculty member.
+  - Display Course name, Course code, Associated class, Section, and Enrolled students.
+  - Search courses, launch roster marking, or inspect subject attendance logs.
+- **Mark Attendance – Core Feature** (`/faculty/mark-attendance`):
+  - **8-Step Professional Workflow**:
+    1. Select assigned class.
+    2. Select assigned subject (auto-filtered to subjects linked to that class).
+    3. Select lecture date.
+    4. Enrolled students automatically populated with Roll number, Name, and Registration number.
+    5. Mark attendance status: **Present** (Green), **Late** (Amber), or **Absent** (Red).
+    6. Bulk action buttons: *Mark All Present*, *Mark All Absent*, and *Reset*.
+    7. Live summary counters: Total learners, Present count, Late count, Absent count, Real-time Turnout %.
+    8. Confirmation modal with full session review before persisting to MongoDB.
+  - **Duplicate Session Prevention**: Strict validation preventing duplicate rosters on the same class, subject, and date (HTTP 409 Conflict with direct link to rectify in History).
+  - **Authorization Verification**: Faculty can only mark attendance for classes and subjects officially assigned to them (HTTP 403 Forbidden on unassigned records).
+- **Attendance History & Log Inspection** (`/faculty/history`):
+  - View all past lecture sessions marked by the instructor.
+  - Multi-criteria filtering: Search term, class filter, subject filter, and date filter.
+  - **Inspect Session Modal**: Detailed student-by-student roll breakdown with status badges and remarks.
+  - **Rectify / Edit Session Modal**: Inline status and remarks modification for error corrections, maintaining audit logs.
+- **Attendance Reports & Analytics** (`/faculty/reports`):
+  - Configurable temporal window: Past 7 days, 14 days, or 30 days.
+  - Recharts Daily Turnout Trend Area Chart.
+  - Recharts Class Turnout Comparison Bar Chart.
+  - Recharts Subject Turnout Breakdown Bar Chart.
+  - Summary metrics: Recorded sessions, Present logs, Late arrivals, Absences, Overall Turnout %.
+- **Faculty Profile & Teaching Load** (`/faculty/profile`):
+  - View instructor credentials: Full Name, Employee ID, Email, Department, Verified Status.
+  - Update official contact phone number.
+  - Chips and cards for assigned classes and courses.
 
 ---
 
@@ -217,14 +267,14 @@ npm run dev
 
 ## 🧪 Automated Testing
 
-Run both test suites (Part 1 Auth + Part 2 Admin):
+Run all three test suites (Part 1 Auth + Part 2 Admin + Part 3 Faculty):
 
 ```bash
 cd backend
 npm test
 ```
 
-### Test Coverage Highlights (22/22 Passing):
+### Test Coverage Highlights (36/36 Passing):
 - ✅ `GET /api/health` verification
 - ✅ Student registration with validation
 - ✅ Role enforcement (cannot escalate to admin via public signup)
@@ -237,14 +287,28 @@ npm test
 - ✅ Subject creation, code uniqueness, and faculty assignment
 - ✅ Student creation, roll number collision prevention, search, and deletion
 - ✅ Faculty creation with auto-provisioned user login and course assignment
-- ✅ Attendance reports overview, class-wise, subject-wise, and date-wise queries
+- ✅ Admin attendance reports overview, class-wise, subject-wise, and date-wise queries
+- ✅ Unauthenticated access to faculty APIs blocked (401)
+- ✅ Student access to faculty endpoints blocked (403 Forbidden)
+- ✅ Faculty dashboard overview stats (assigned classes, subjects, students, turnout rate)
+- ✅ Faculty can retrieve list of assigned classes
+- ✅ Faculty can retrieve list of assigned subjects
+- ✅ Faculty can retrieve student roster for assigned class
+- ✅ Faculty blocked from accessing unassigned class rosters (403 Forbidden)
+- ✅ Faculty can mark attendance with Present, Absent, and Late records (201)
+- ✅ Duplicate attendance prevention on same class, subject, and date (409 Conflict)
+- ✅ Faculty can view attendance history logs
+- ✅ Faculty can fetch single attendance session by ID
+- ✅ Faculty can update attendance session records (rectification)
+- ✅ Faculty can retrieve visual attendance reports and analytics
+- ✅ Faculty can view and update profile details
 
 ---
 
 ## 🗺️ Five-Part Development Roadmap
 
 - **Part 1 (Done)**: Project setup, design system, landing page, authentication, and role routing.
-- **Part 2 (Current)**: Admin dashboard, student & faculty management, classes, subjects, faculty assignments, and attendance reports.
-- **Part 3 (Next)**: Faculty dashboard, classroom session marking, attendance editing, and class-wise reporting.
-- **Part 4**: Student dashboard, attendance history, subject percentages, and analytics.
+- **Part 2 (Done)**: Admin dashboard, student & faculty management, classes, subjects, faculty assignments, and attendance reports.
+- **Part 3 (Done)**: Faculty dashboard, classroom session marking, attendance editing, assigned classes/subjects, and faculty analytics.
+- **Part 4 (Next)**: Student dashboard, attendance history, subject percentages, and analytics.
 - **Part 5**: Integration, end-to-end testing, validation, and final production polish.

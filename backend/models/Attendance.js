@@ -54,6 +54,10 @@ const attendanceSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    totalLate: {
+      type: Number,
+      default: 0,
+    },
     totalStudents: {
       type: Number,
       default: 0,
@@ -64,12 +68,13 @@ const attendanceSchema = new mongoose.Schema(
   }
 );
 
-// Auto-calculate present and absent totals before saving
+// Auto-calculate present, absent, and late totals before saving
 attendanceSchema.pre('save', function (next) {
   if (this.records && Array.isArray(this.records)) {
     this.totalStudents = this.records.length;
-    this.totalPresent = this.records.filter((r) => r.status === 'present' || r.status === 'late').length;
+    this.totalPresent = this.records.filter((r) => r.status === 'present').length;
     this.totalAbsent = this.records.filter((r) => r.status === 'absent').length;
+    this.totalLate = this.records.filter((r) => r.status === 'late').length;
   }
   next();
 });
