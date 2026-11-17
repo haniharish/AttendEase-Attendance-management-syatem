@@ -1,0 +1,24 @@
+{
+  "name": "attendease",
+  "version": "1.0.0",
+  "description": "AttendEase - Student Attendance Management System (MERN Stack)",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "start:backend": "npm --prefix backend start",
+    "seed": "npm --prefix backend run seed",
+    "test:backend": "npm --prefix backend test",
+    "build:frontend": "npm --prefix frontend run build"
+  },
+  "keywords": [
+    "attendance",
+    "mern",
+    "react",
+    "vite",
+    "tailwind",
+    "express",
+    "mongodb"
+  ],
+  "author": "AttendEase Team",
+  "license": "ISC"
+}
