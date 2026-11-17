@@ -10,7 +10,56 @@
 
 AttendEase is an enterprise-grade, modern SaaS-style Student Attendance Management System developed using the MERN stack (MongoDB, Express, React, Node.js). 
 
-This repository contains the completed **Part 1 (Foundation & Authentication)**, **Part 2 (Admin Dashboard & Management System)**, and **Part 3 (Faculty Dashboard & Attendance Management System)**.
+This repository contains the completed **Part 1 (Foundation & Authentication)**, **Part 2 (Admin Dashboard & Management System)**, **Part 3 (Faculty Dashboard & Attendance Management System)**, and **Part 4 (Student Dashboard & Attendance Analytics)**.
+
+---
+
+## 🎒 Part 4 Scope & Delivered Features
+
+- **Three-Column Student Portal Layout**:
+  - **Left Navigation Sidebar (`256px`)**: Dashboard, My Attendance, Subject-Wise Attendance, Attendance History, Attendance Reports, My Profile, Sign Out with primary-blue active indicator and responsive mobile drawer.
+  - **Flexible Center Canvas**: Clean typography, 24px high-radius cards, soft shadows, live metrics, and Recharts interactive graphs.
+  - **Right Profile & Activity Sidebar (`320px`)**:
+    - **Student Profile**: Avatar, Name, Registration Number, Class & Section, Academic Year.
+    - **Interactive Mini Calendar**: Horizontal 7-day selector with pink (`#ec4899`) active date highlighting and lecture attendance status lookup.
+    - **Cumulative Attendance Tally**: Real-time counter of Present, Late, and Absent days.
+    - **Academic Notice Widget**: Verified enrollment and 75% examination threshold reminder.
+- **Student Dashboard Overview** (`/student/dashboard`):
+  - 5 Core Metrics: **Overall Attendance Rate**, **Total Conducted Lectures**, **Classes Attended** (Present + Late), **Classes Missed** (Absent), and **Late Arrivals**.
+  - Monthly attendance trajectory area chart.
+  - Subject summary cards with visual progress bars.
+  - Recent lecture activity table with instructor names and attendance badges.
+  - Low attendance alert integration.
+- **My Attendance Ledger** (`/student/attendance`):
+  - Period filters: **All Time**, **Today**, **This Week**, **This Month**, and **Custom Date Range** (`startDate` to `endDate`).
+  - Attendance rate summary cards for the selected window.
+  - Monthly distribution bar chart.
+  - Detailed log table of lecture attendances.
+- **Subject-Wise Attendance** (`/student/subjects`):
+  - Course-by-course breakdown: Subject Name, Code, Assigned Instructor, Total Conducted, Attended, and Missed.
+  - **Visual Attendance Progress Bar**:
+    - **Healthy** (`>= 75%`): `#10b981` Emerald Green
+    - **Warning** (`65% - 74%`): `#f97316` Amber Orange
+    - **Low** (`< 65%`): `#ef4444` Crimson Red
+  - **Mathematical Target Recovery**: Exact formula calculation of how many upcoming consecutive classes the student must attend to reach the 75% standard: $\lceil (0.75 \times T - P) / 0.25 \rceil$.
+- **Attendance History** (`/student/history`):
+  - Search by subject title, subject code, or faculty instructor.
+  - Filter by attendance status (Present, Late, Absent).
+  - Date range filtering and chronological sort toggle (Newest / Oldest first).
+  - Paginated data table (10 records per page).
+  - **Data Isolation**: Strict server-side verification ensuring students can only view their own attendance history.
+- **Attendance Reports & Visual Analytics** (`/student/reports`):
+  - **Overall Attendance Area Chart**: Month-over-month trajectory curve.
+  - **Subject Turnout Bar Chart**: Side-by-side percentage comparison across curriculum courses.
+  - **Participation Distribution Donut Chart**: Proportional breakdown of Present vs Late vs Absent sessions.
+  - **Monthly Performance Table**: Tabular ledger with exact counts and percentages per academic month.
+- **Low Attendance Warning System** (`/api/student/attendance/warnings`):
+  - Identifies subjects falling below the 75% institutional rule.
+  - Provides clear, actionable warnings and the number of consecutive lectures needed to recover.
+- **Student Profile Management** (`/student/profile`):
+  - Displays full academic enrollment: Name, Registration Number, Institutional Email, Phone Number, Section, Roll Number, and Academic Year.
+  - In-place form allowing student to update only permitted fields (`phoneNumber`).
+  - Administrative records (Class, Roll number, Registration number, Attendance history) remain strictly immutable.
 
 ---
 
@@ -267,14 +316,14 @@ npm run dev
 
 ## 🧪 Automated Testing
 
-Run all three test suites (Part 1 Auth + Part 2 Admin + Part 3 Faculty):
+Run all four test suites (Part 1 Auth + Part 2 Admin + Part 3 Faculty + Part 4 Student):
 
 ```bash
 cd backend
 npm test
 ```
 
-### Test Coverage Highlights (36/36 Passing):
+### Test Coverage Highlights (47/47 Passing):
 - ✅ `GET /api/health` verification
 - ✅ Student registration with validation
 - ✅ Role enforcement (cannot escalate to admin via public signup)
@@ -302,6 +351,17 @@ npm test
 - ✅ Faculty can update attendance session records (rectification)
 - ✅ Faculty can retrieve visual attendance reports and analytics
 - ✅ Faculty can view and update profile details
+- ✅ Unauthenticated access to student endpoints blocked (401)
+- ✅ Faculty blocked from accessing student endpoints (403 Forbidden)
+- ✅ Admin blocked from accessing student endpoints directly (403 Forbidden)
+- ✅ Student can access personal dashboard statistics from real attendance data (200)
+- ✅ Student can view profile credentials
+- ✅ Student can update contact phone number but cannot escalate or alter registration number
+- ✅ Student can fetch detailed attendance records with date filters (today, week, month, custom)
+- ✅ Student can fetch subject-wise attendance breakdown with percentage calculation
+- ✅ Student can fetch attendance history with search, status filters, and pagination
+- ✅ Student can fetch visual analytics (monthly trend, subject comparison, participation distribution)
+- ✅ Student can fetch low attendance warnings with consecutive classes needed target calculation
 
 ---
 
@@ -310,5 +370,5 @@ npm test
 - **Part 1 (Done)**: Project setup, design system, landing page, authentication, and role routing.
 - **Part 2 (Done)**: Admin dashboard, student & faculty management, classes, subjects, faculty assignments, and attendance reports.
 - **Part 3 (Done)**: Faculty dashboard, classroom session marking, attendance editing, assigned classes/subjects, and faculty analytics.
-- **Part 4 (Next)**: Student dashboard, attendance history, subject percentages, and analytics.
-- **Part 5**: Integration, end-to-end testing, validation, and final production polish.
+- **Part 4 (Done)**: Student dashboard, attendance history, subject percentages, low-attendance warnings, and analytics.
+- **Part 5 (Next)**: Integration, end-to-end testing, validation, and final production polish.
