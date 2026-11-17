@@ -1,0 +1,87 @@
+services:
+  # ===================================================
+  # 1. MongoDB Database Service
+  # ===================================================
+  mongodb:
+    image: mongo:7.0
+    container_name: attendease-mongodb
+    restart: unless-stopped
+    ports:
+      - "${MONGODB_PORT:-27018}:27017"
+    environment:
+      MONGO_INITDB_DATABASE: attendease
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - attendease-network
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval \"db.adminCommand({ ping: 1 })\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ===================================================
+  # 2. Express Backend API Service
+  # ===================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: attendease-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-6000}:6000"
+    environment:
+      PORT: 6000
+      NODE_ENV: production
+      MONGODB_URI: ${MONGODB_URI:-mongodb://mongodb:27017/attendease}
+      JWT_SECRET: ${JWT_SECRET:-attendease_production_super_secret_jwt_key_2026}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:5176}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - attendease-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:6000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ===================================================
+  # 3. React Frontend Production Service (Nginx)
+  # ===================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    container_name: attendease-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-5176}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - attendease-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/ || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+# ===================================================
+# Persistent Volumes & Networks
+# ===================================================
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  attendease-network:
+    driver: bridge

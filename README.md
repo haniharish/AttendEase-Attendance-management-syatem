@@ -74,7 +74,143 @@
 
 ---
 
-## 🚀 Getting Started
+## 🐳 Docker Setup and Deployment (DevOps Phase 1)
+
+AttendEase is fully containerized using **Docker** and **Docker Compose** for reliable, repeatable, multi-environment deployments.
+
+### 🏗️ Docker Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           Client Web Browser                                │
+└───────────────────────┬─────────────────────────────────┬───────────────────┘
+                        │ HTTP Port 5176                  │ Port 6000 (Direct)
+                        ▼                                 ▼
+┌───────────────────────────────────────┐   ┌─────────────────────────────────┐
+│        `attendease-frontend`          │   │      `attendease-backend`       │
+│  • Multi-stage build (Node 20 + Vite) │   │  • Node 20-alpine runtime       │
+│  • Nginx 1.27 Alpine production server│   │  • Non-root `node` user security│
+│  • Client SPA Routing                 │   │  • Express REST API             │
+│  • Reverse Proxy: `/api/` ────────────┼──►│  • Built-in container healthcheck│
+└───────────────────────────────────────┘   └────────────────┬────────────────┘
+                        ▲                                    │
+                        │ Internal Docker Bridge Network     │ TCP Port 27017
+                        │ (`attendease-network`)             ▼
+                        │                   ┌─────────────────────────────────┐
+                        │                   │       `attendease-mongodb`      │
+                        │                   │  • Official Mongo 7.0 engine    │
+                        │                   │  • Container healthcheck (ping) │
+                        └───────────────────┤  • Host port: 27018             │
+                                            └────────────────┬────────────────┘
+                                                             │
+                                                             ▼
+                                                    ┌─────────────────┐
+                                                    │  Persistent Vol │
+                                                    │ (`mongodb_data`)│
+                                                    └─────────────────┘
+```
+
+### 📋 Prerequisites
+- **Docker**: Version 20.10.0 or higher (Docker Desktop on Windows/macOS or Docker Engine on Linux)
+- **Docker Compose**: Version v2.20.0 or higher (`docker compose` command)
+
+---
+
+### ⚙️ Environment Configuration
+
+Copy the sample environment file to `.env` in the repository root:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Default Value | Description |
+|---|---|---|
+| `FRONTEND_PORT` | `5176` | Host port mapped to the Nginx frontend container (port 80) |
+| `BACKEND_PORT` | `6000` | Host port mapped to the Express backend container |
+| `MONGODB_PORT` | `27018` | Host port mapped to MongoDB (avoids collision with local 27017) |
+| `MONGODB_URI` | `mongodb://mongodb:27017/attendease` | Container database connection (or custom MongoDB Atlas URI) |
+| `JWT_SECRET` | `your_secure_jwt_secret_key` | Secret key used for signing JWT authentication tokens |
+| `CLIENT_URL` | `http://localhost:5176` | Allowed client origin for CORS security policies |
+| `NODE_ENV` | `production` | Container runtime mode |
+
+> [!TIP]
+> If connecting to **MongoDB Atlas** instead of the local Docker database container, set `MONGODB_URI` in `.env` to your Atlas connection string (`mongodb+srv://<user>:<password>@cluster.mongodb.net/attendease`).
+
+---
+
+### 🚀 Quick Start with Docker
+
+#### 1. Build and Launch Containers
+Build the multi-stage images and spin up all three services in detached background mode:
+```bash
+docker compose up -d --build
+```
+
+#### 2. Seed Initial Demo Accounts & Academic Data
+Once the containers are healthy, seed the database directly inside the backend container:
+```bash
+docker compose exec backend npm run seed
+```
+
+#### 3. Access the Application
+- **Frontend Application**: [http://localhost:5176](http://localhost:5176)
+- **Backend API Health**: [http://localhost:5176/api/health](http://localhost:5176/api/health) (or direct: [http://127.0.0.1:6000/api/health](http://127.0.0.1:6000/api/health))
+
+---
+
+### 🛠️ Common Docker Commands
+
+#### Check Service Status & Health
+```bash
+docker compose ps
+```
+
+#### View Live Real-time Logs
+```bash
+# Stream all logs
+docker compose logs -f
+
+# Stream specific service logs
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose logs -f mongodb
+```
+
+#### Stop Containers
+```bash
+# Stop containers (preserves container state)
+docker compose stop
+
+# Stop and remove containers and network (preserves database volume)
+docker compose down
+```
+
+#### Rebuild Containers After Code Changes
+```bash
+docker compose up -d --build
+```
+
+#### Database Persistence
+Data is stored safely in the named volume `mongodb_data`. Your data remains intact across container restarts, image upgrades, and `docker compose down` operations. To permanently wipe the database volume:
+```bash
+docker compose down -v
+```
+
+---
+
+### 🔧 Troubleshooting Docker Issues
+
+| Symptom | Cause | Solution |
+|---|---|---|
+| `bind: address already in use: 0.0.0.0:27017` | Local MongoDB is already running on port 27017 on the host. | AttendEase maps host port to `27018` by default (`MONGODB_PORT=27018`). Ensure your `.env` specifies `MONGODB_PORT=27018`. |
+| `bind: address already in use: 0.0.0.0:5176` | An existing Node or Vite process is holding port 5176. | Run `netstat -ano \| findstr :5176` and terminate the orphaned process with `Stop-Process -Id <PID> -Force` (PowerShell) or `kill -9 <PID>` (Linux/macOS). |
+| Backend container unhealthy | MongoDB not ready before backend start. | AttendEase uses Docker Compose `depends_on` with `condition: service_healthy` so backend only starts after Mongo passes its ping test. Check logs: `docker compose logs backend`. |
+| Browser cannot reach `/api/*` | Nginx reverse proxy configuration error. | The Nginx container proxies `/api/` traffic directly to `http://backend:6000/api/` over the internal Docker network. Verify frontend logs: `docker compose logs frontend`. |
+
+---
+
+## 💻 Local Development Setup (Non-Docker)
 
 ### Prerequisites
 - **Node.js**: v18.0.0 or higher (v22.13 recommended)
