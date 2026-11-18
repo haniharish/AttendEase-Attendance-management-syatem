@@ -310,6 +310,84 @@ The database seeder provisions demo accounts for each user role:
 
 ---
 
+## 📊 Nagios Core Monitoring (DevOps Phase 2)
+
+AttendEase features an enterprise-grade infrastructure monitoring solution powered by **Nagios Core 4.5.12**, providing real-time telemetry, automated health probes, and an integrated Admin Monitoring Dashboard.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          Admin Browser Client                               │
+│        (Accessing /admin/monitoring with JWT Admin Authorization)           │
+└───────────────────────┬─────────────────────────────────┬───────────────────┘
+                        │ React Dashboard (Port 5176)     │ Nagios Web GUI (:8080)
+                        ▼                                 ▼
+┌───────────────────────────────────────┐   ┌─────────────────────────────────┐
+│        `attendease-frontend`          │   │       `attendease-nagios`       │
+│  • System Health Cards & Gauges       │   │  • Nagios Core 4.5.12 Daemon    │
+│  • Resource Telemetry (Recharts)      │   │  • Active HTTP, TCP, Docker probes│
+│  • Services Directory & Filters       │   │  • Status Engine: status.dat    │
+└───────────────────┬───────────────────┘   └────────────────┬────────────────┘
+                    │ /api/monitoring/*                      │
+                    ▼                                        │ Shared Volume
+┌───────────────────────────────────────┐                    │ `nagios_var`
+│         `attendease-backend`          │◄───────────────────┘ (/opt/nagios/var/status.dat)
+│  • nagios.service.js (status parser)  │
+│  • monitoring.service.js (SRE logic)  │──► [ MongoDB (Port 27017) ]
+│  • Role-protected APIs (Admin only)   │──► [ Frontend (Port 80) ]
+└───────────────────────────────────────┘──► [ Docker Socket (/var/run/docker.sock) ]
+```
+
+### 🔭 Monitored Components & Services Catalog
+
+| Target Component | Host Address | Service Name | Check Type | Plugin / Probe |
+|---|---|---|---|---|
+| **Frontend** | `attendease-frontend` | Frontend Web UI Accessibility | HTTP Status & Latency | `check_http -p 80 -u /` |
+| **Frontend** | `attendease-frontend` | Nginx Web Server TCP | Port Availability | `check_tcp -p 80` |
+| **Backend** | `attendease-backend` | Backend Express Health API | JSON Health Response | `check_http -p 6000 -u /api/health` |
+| **Backend** | `attendease-backend` | Express API Port TCP | Socket Availability | `check_tcp -p 6000` |
+| **Database** | `attendease-mongodb` | MongoDB Database Connectivity | TCP Socket Accept | `check_tcp -p 27017` |
+| **Docker** | `localhost` | Docker Frontend Container | Container & Health State | `check_docker.sh attendease-frontend` |
+| **Docker** | `localhost` | Docker Backend Container | Container & Health State | `check_docker.sh attendease-backend` |
+| **Docker** | `localhost` | Docker MongoDB Container | Container & Health State | `check_docker.sh attendease-mongodb` |
+| **Host System**| `localhost` | Host CPU Load Average | 1m, 5m, 15m Load Average| `check_load -w 15,10,5 -c 30,25,20` |
+| **Host System**| `localhost` | Host Memory Utilization | RAM Allocation & Buffers| `check_mem.pl -C -u -w 80 -c 90` |
+| **Host System**| `localhost` | Host Disk Space Usage | Root Mount Storage Free | `check_disk -w 20% -c 10% -p /` |
+| **Host System**| `localhost` | Host System Uptime | Node Operating System | `check_uptime` |
+
+### 🔐 Secure Monitoring REST API (`/api/monitoring`)
+
+All monitoring endpoints are strictly protected by JWT verification and role-based access control (`authorize('admin')`). Requests from Faculty or Student accounts return `403 Forbidden`.
+
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/api/health` | Public | Application health status (`status`, `database`, `uptime`) |
+| `GET` | `/api/monitoring/summary` | Admin Only | Overall system health status, component breakdown, and service tallies |
+| `GET` | `/api/monitoring/hosts` | Admin Only | Detailed statuses and check results for all monitored hosts |
+| `GET` | `/api/monitoring/services` | Admin Only | Complete directory of active service checks with latency and attempts |
+| `GET` | `/api/monitoring/alerts` | Admin Only | Active warnings and critical incidents requiring operator attention |
+| `GET` | `/api/monitoring/resources`| Admin Only | Host system telemetry (CPU usage %, RAM used/free, Disk %, Uptime) |
+
+### 🖥️ Admin System Monitoring Dashboard
+
+Accessible at `/admin/monitoring` within the Admin Portal:
+- **Real-Time Health Status**: Live banner displaying system condition (OPERATIONAL, DEGRADED, CRITICAL).
+- **Auto-Refresh Mechanism**: Configurable polling intervals (15s, 30s, 60s, or Manual) with live countdown.
+- **7 Metric Summary Cards**: System Health %, Total Services, Passing Services, Warnings, Criticals, Hosts Up, and Active Alert count.
+- **5 Component Cards**: Deep telemetry for React Frontend, Node.js API, MongoDB Database, Docker Containers, and Nagios Engine.
+- **Resource Diagnostics & Telemetry**: Visualized with Recharts horizontal bar charts (CPU load, RAM used %, Disk used %, System Uptime).
+- **Interactive Service Directory**: Tabbed filtering (`ALL`, `OK`, `WARNING`, `CRITICAL`) with search-as-you-type input.
+- **Nagios GUI Integration**: One-click launcher to open the native Nagios Core 4.5.12 Web Interface.
+
+### 🔑 Monitoring Service Credentials & Ports
+
+| Service | Host Port | Protocol | Default Credentials |
+|---|---|---|---|
+| **Nagios Core Web Interface** | `http://localhost:8080/nagios/` | HTTP Basic Auth | `nagiosadmin` / `AdminPassword123!` |
+| **Admin Monitoring Dashboard** | `http://localhost:5176/admin/monitoring` | JWT Session | `admin@attendease.com` / `AdminPassword123!` |
+| **Backend Health Endpoint** | `http://localhost:6000/api/health` | Public REST | None |
+
+---
+
 ## 🧪 Automated Testing
 
 AttendEase includes 5 comprehensive test suites covering unit logic, role authorization, and end-to-end integration:

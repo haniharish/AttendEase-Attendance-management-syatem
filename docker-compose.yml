@@ -38,6 +38,10 @@ services:
       MONGODB_URI: ${MONGODB_URI:-mongodb://mongodb:27017/attendease}
       JWT_SECRET: ${JWT_SECRET:-attendease_production_super_secret_jwt_key_2026}
       CLIENT_URL: ${CLIENT_URL:-http://localhost:5176}
+      NAGIOS_STATUS_FILE: ${NAGIOS_STATUS_FILE:-/opt/nagios/var/status.dat}
+      NAGIOS_CGI_URL: ${NAGIOS_CGI_URL:-http://nagios:80/nagios/cgi-bin}
+    volumes:
+      - nagios_var:/opt/nagios/var:ro
     depends_on:
       mongodb:
         condition: service_healthy
@@ -75,11 +79,47 @@ services:
       retries: 3
       start_period: 5s
 
+  # ===================================================
+  # 4. Nagios Core Monitoring Service
+  # ===================================================
+  nagios:
+    image: jasonrivers/nagios:latest
+    container_name: attendease-nagios
+    restart: unless-stopped
+    ports:
+      - "${NAGIOS_PORT:-8080}:80"
+    environment:
+      NAGIOSADMIN_USER: ${NAGIOS_USER:-nagiosadmin}
+      NAGIOSADMIN_PASS: ${NAGIOS_PASS:-AdminPassword123!}
+      NAGIOS_TIMEZONE: ${NAGIOS_TIMEZONE:-UTC}
+    volumes:
+      - ./monitoring/nagios/conf.d:/opt/nagios/etc/conf.d:ro
+      - ./monitoring/nagios/plugins/check_docker.sh:/opt/nagios/libexec/check_docker.sh:ro
+      - nagios_var:/opt/nagios/var
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    networks:
+      - attendease-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider --user=nagiosadmin --password=AdminPassword123! http://127.0.0.1/nagios/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
 # ===================================================
 # Persistent Volumes & Networks
 # ===================================================
 volumes:
   mongodb_data:
+    driver: local
+  nagios_var:
     driver: local
 
 networks:

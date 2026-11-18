@@ -7,6 +7,7 @@ import {
   Layers,
   BookOpen,
   BarChart3,
+  Activity,
   Settings,
   LogOut,
   X,
@@ -20,6 +21,7 @@ const navItems = [
   { name: 'Classes', path: '/admin/classes', icon: Layers },
   { name: 'Subjects', path: '/admin/subjects', icon: BookOpen },
   { name: 'Attendance Reports', path: '/admin/reports', icon: BarChart3 },
+  { name: 'System Monitoring', path: '/admin/monitoring', icon: Activity },
   { name: 'Settings', path: '/admin/settings', icon: Settings },
 ];
 

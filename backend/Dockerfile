@@ -22,6 +22,7 @@ COPY config ./config
 COPY controllers ./controllers
 COPY middleware ./middleware
 COPY models ./models
+COPY modules ./modules
 COPY routes ./routes
 COPY utils ./utils
 

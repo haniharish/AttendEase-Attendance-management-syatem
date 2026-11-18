@@ -21,6 +21,7 @@ const FacultyManagementPage = lazy(() => import('../pages/admin/FacultyManagemen
 const ClassManagementPage = lazy(() => import('../pages/admin/ClassManagementPage'));
 const SubjectManagementPage = lazy(() => import('../pages/admin/SubjectManagementPage'));
 const AttendanceReportsPage = lazy(() => import('../pages/admin/AttendanceReportsPage'));
+const SystemMonitoringPage = lazy(() => import('../pages/admin/SystemMonitoringPage'));
 const AdminSettingsPage = lazy(() => import('../pages/admin/AdminSettingsPage'));
 
 // Faculty Pages (Code-split with React.lazy)
@@ -131,6 +132,16 @@ const AppRoutes = () => {
             <ProtectedRoute>
               <RoleProtectedRoute allowedRoles={['admin']}>
                 <AttendanceReportsPage />
+              </RoleProtectedRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/monitoring"
+          element={
+            <ProtectedRoute>
+              <RoleProtectedRoute allowedRoles={['admin']}>
+                <SystemMonitoringPage />
               </RoleProtectedRoute>
             </ProtectedRoute>
           }
