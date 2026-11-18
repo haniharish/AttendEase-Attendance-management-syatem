@@ -35,3 +35,23 @@ logs/
 # Database scratch
 scratch/
 mongodb_data/
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+tfplan
+*.plan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# SSH & Credentials
+*.pem
+*.pub
+.aws/

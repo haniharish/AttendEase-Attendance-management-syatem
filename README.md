@@ -416,6 +416,102 @@ Total Test Suites: 5 | Total Assertions: 58 | Passing: 58 | Failing: 0 (100% PAS
 - **Part 3**: Faculty portal with 8-step attendance marking, duplicate prevention, and session rectification.
 - **Part 4**: Student dashboard, subject-wise attendance, 75% warning system, and Recharts analytics.
 - **Part 5**: Code-splitting performance optimization, database compound indexing, security review, and multi-role integration testing.
+- **DevOps Phase 1 & 2**: Multi-stage Docker containerization and Nagios Core 4.5.12 system monitoring integration with in-app Admin dashboard.
+- **DevOps Phase 3 & 4**: Infrastructure as Code (IaC) with Terraform and 24/7 continuous deployment on AWS (Mumbai `ap-south-1`) with $0.00/month Free Tier optimization.
+
+---
+
+## ☁️ DevOps Phase 3 & 4 – AWS Infrastructure & Terraform Deployment
+
+AttendEase is fully provisioned on **Amazon Web Services (AWS)** using **Terraform (Infrastructure as Code)** in the **Mumbai (`ap-south-1`)** region. The architecture is engineered for **24/7 continuous production availability** while maintaining **100% Free Tier compliance ($0.00 USD/month)**.
+
+### 🌐 Live Production Access & Credentials
+
+| Service | Access URL | Protocol / Port | Authentication |
+|---|---|---|---|
+| **Frontend Web Application** | [http://13.233.172.243](http://13.233.172.243) | HTTP / 80 | Public Web Access |
+| **Backend REST API** | [http://13.233.172.243/api/health](http://13.233.172.243/api/health) | HTTP / 80 (Nginx Reverse Proxy) | Public / JWT Protected |
+| **Admin System Monitoring** | [http://13.233.172.243/admin/monitoring](http://13.233.172.243/admin/monitoring) | HTTP / 80 | `admin@attendease.com` / `AdminPassword123!` |
+| **Nagios Core Web Interface** | [http://13.233.172.243:8080/nagios/](http://13.233.172.243:8080/nagios/) | HTTP / 8080 | `nagiosadmin` / `AdminPassword123!` *(Admin IP Only)* |
+| **SSH Server Access** | `ssh -i ~/.ssh/attendease-key.pem ubuntu@13.233.172.243` | SSH / 22 | Key Pair: `attendease-key` *(Admin IP Only)* |
+
+> 🔒 **Security Hardening**: MongoDB (27017/27018) and raw Express (6000) are blocked from the internet by AWS Security Groups. SSH (22) and Nagios (8080) are restricted strictly to the administrator's authorized IP address.
+
+### 🏛️ AWS Cloud Infrastructure Architecture
+
+```
+                                  AWS Cloud (ap-south-1 - Mumbai)
+   Internet
+      │
+      ▼
+┌──────────────┐
+│ Internet GW  │ (attendease-igw)
+└──────┬───────┘
+       │
+┌──────▼────────────────────────────────────────────────────────────────────────┐
+│ Virtual Private Cloud: 10.0.0.0/16 (attendease-vpc)                          │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────┐  │
+│  │ Public Subnet: 10.0.1.0/24 (ap-south-1a) (attendease-public-subnet)     │  │
+│  │                                                                         │  │
+│  │  ┌───────────────────────────────────────────────────────────────────┐  │  │
+│  │  │ EC2 Instance: t3.micro (Ubuntu 24.04 LTS) (i-087d8281101d6b27d)  │  │  │
+│  │  │ Elastic Block Store: 20 GB gp3 Encrypted Root Disk               │  │  │
+│  │  │ Public IPv4: 13.233.172.243 | Private IPv4: 10.0.1.89            │  │  │
+│  │  │ Swap Space: 2.0 GB (Total Effective Memory: ~3.0 GB)              │  │  │
+│  │  │                                                                   │  │  │
+│  │  │  ┌─────────────────────────────────────────────────────────────┐  │  │  │
+│  │  │  │ Docker Engine 29.10 + Docker Compose v5.8.0                 │  │  │  │
+│  │  │  │                                                             │  │  │  │
+│  │  │  │  ┌────────────────────┐   ┌──────────────────────────────┐  │  │  │  │
+│  │  │  │  │ Frontend Container │   │ Backend API Container        │  │  │  │  │
+│  │  │  │  │ Nginx (Port 80)    │◄──┼─► Node.js / Express (Port 6000)│  │  │  │
+│  │  │  │  └────────────────────┘   └──────────────┬───────────────┘  │  │  │  │
+│  │  │  │                                          │                  │  │  │  │
+│  │  │  │  ┌────────────────────┐   ┌──────────────▼───────────────┐  │  │  │  │
+│  │  │  │  │ Nagios Monitoring  │   │ MongoDB Database Container   │  │  │  │  │
+│  │  │  │  │ Core 4.5.12 (8080) │   │ Mongo 7.0 (Port 27017)       │  │  │  │  │
+│  │  │  │  └─────────┬──────────┘   └──────────────────────────────┘  │  │  │  │
+│  │  │  │            │ (status.dat IPC Volume)     ▲                  │  │  │  │
+│  │  │  │            └─────────────────────────────┘                  │  │  │  │
+│  │  │  └─────────────────────────────────────────────────────────────┘  │  │  │
+│  │  └───────────────────────────────────────────────────────────────────┘  │  │
+│  └─────────────────────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 💰 Cost Economics & Free Tier Compliance
+
+- **Compute (`t3.micro`)**: 750 hours/month included in AWS Free Tier = **$0.00 / month**.
+- **EBS Storage (20 GB gp3 encrypted)**: Up to 30 GB included in AWS Free Tier = **$0.00 / month**.
+- **Public IPv4 Address**: 750 in-use hours/month included in AWS Free Tier = **$0.00 / month**.
+- **Data Transfer**: Under 100 GB/month egress included = **$0.00 / month**.
+- **Total Net Cost**: **$0.00 / month** (Your AWS credits remain 100% untouched).
+
+### 🛠️ Infrastructure as Code Workflow
+
+All Terraform code is organized inside the [`terraform/`](terraform/) directory:
+
+```bash
+cd terraform
+
+# 1. Initialize AWS Provider
+terraform init
+
+# 2. Validate configuration
+terraform validate
+
+# 3. View planned changes
+terraform plan
+
+# 4. Provision infrastructure
+terraform apply
+
+# 5. Teardown / Decommission all AWS resources cleanly
+terraform destroy
+```
+
+---
 
 ---
 
