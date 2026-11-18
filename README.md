@@ -1,13 +1,26 @@
 # AttendEase – Student Attendance Management System
 
+[![Live Demo](https://img.shields.io/badge/Live_Deployment-http%3A%2F%2F13.233.172.243-00c853?style=for-the-badge&logo=google-chrome&logoColor=white)](http://13.233.172.243)
+[![AWS Deployed](https://img.shields.io/badge/AWS-ap--south--1-FF9900?logo=amazon-aws&logoColor=white)](http://13.233.172.243)
+[![Terraform](https://img.shields.io/badge/IaC-Terraform_1.17-7B42BC?logo=terraform&logoColor=white)](terraform/)
+[![Docker](https://img.shields.io/badge/Docker-Compose_v5.8-2496ED?logo=docker&logoColor=white)](docker-compose.yml)
+[![Nagios](https://img.shields.io/badge/Monitoring-Nagios_Core_4.5-000000?logo=nagios&logoColor=white)](http://13.233.172.243/admin/monitoring)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite-6.4-646CFF?logo=vite&logoColor=white)](https://vitejs.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Node.js](https://img.shields.io/badge/Node.js-v22.13-339933?logo=node.js&logoColor=white)](https://nodejs.org)
-[![Express](https://img.shields.io/badge/Express-4.21-000000?logo=express&logoColor=white)](https://expressjs.com)
-[![MongoDB](https://img.shields.io/badge/MongoDB-8.0-47A248?logo=mongodb&logoColor=white)](https://mongodb.com)
-[![JWT](https://img.shields.io/badge/Auth-JWT_HTTP--only_Cookies-FB542B)](https://jwt.io)
+[![MongoDB](https://img.shields.io/badge/MongoDB-7.0-47A248?logo=mongodb&logoColor=white)](https://mongodb.com)
 [![Tests](https://img.shields.io/badge/Tests-58%2F58%20Passing%20(100%25)-10b981)](https://github.com/haniharish/AttendEase-Attendance-management-syatem)
+
+> ### 🌐 **Live Hosted Application**: [http://13.233.172.243](http://13.233.172.243)
+> **Hosted 24/7 on AWS EC2 (`ap-south-1` Mumbai)** | **Fully Automated via Terraform & Docker**
+> 
+> **Quick Access Credentials**:
+> - 🛡️ **Administrator**: `admin@attendease.com` / `AdminPassword123!`
+> - 🎓 **Faculty**: `faculty@attendease.com` / `FacultyPassword123!`
+> - 🎒 **Student**: `student@attendease.com` / `StudentPassword123!`
+> - 📊 **System Monitoring Dashboard**: [http://13.233.172.243/admin/monitoring](http://13.233.172.243/admin/monitoring)
+> - 🔍 **Nagios Core Web UI**: [http://13.233.172.243:8080/nagios/](http://13.233.172.243:8080/nagios/) (`nagiosadmin` / `AdminPassword123!`)
+
+---
 
 **AttendEase** is an enterprise-grade Student Attendance Management System built with the MERN stack (MongoDB, Express.js, React, Node.js). Designed with a modern, high-contrast SaaS aesthetic (Plus Jakarta Sans, 24px rounded cards, three-column layout), it provides a complete end-to-end workflow for academic institutions to monitor attendance, conduct classroom roll-calls, track student eligibility, and analyze attendance trends.
 

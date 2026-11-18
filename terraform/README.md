@@ -1,6 +1,14 @@
 # AttendEase Infrastructure as Code (Terraform)
 
-This directory contains the complete Infrastructure as Code (IaC) configuration using **Terraform** to provision the cloud infrastructure for **AttendEase – Student Attendance Management System** on Amazon Web Services (AWS).
+[![Live Deployment](https://img.shields.io/badge/Live_Application-http%3A%2F%2F13.233.172.243-00c853?style=for-the-badge&logo=google-chrome&logoColor=white)](http://13.233.172.243)
+[![AWS](https://img.shields.io/badge/AWS-ap--south--1-FF9900?logo=amazon-aws&logoColor=white)](http://13.233.172.243)
+[![Terraform](https://img.shields.io/badge/Terraform-v1.17-7B42BC?logo=terraform&logoColor=white)](https://terraform.io)
+
+> ### 🌐 **Live Hosted Deployment**: [http://13.233.172.243](http://13.233.172.243)
+> - **Public Application URL**: [http://13.233.172.243](http://13.233.172.243)
+> - **Admin System Monitoring**: [http://13.233.172.243/admin/monitoring](http://13.233.172.243/admin/monitoring)
+> - **Nagios Core Web UI**: [http://13.233.172.243:8080/nagios/](http://13.233.172.243:8080/nagios/)
+> - **Monthly AWS Cost**: **$0.00 / month** (100% Free Tier Eligible in `ap-south-1`)
 
 ---
 
@@ -20,7 +28,7 @@ Starting from absolute zero, this Terraform module provisions:
    - Internal ports (MongoDB 27017, Backend 6000) remain strictly private.
 6. **EC2 Virtual Machine**:
    - Ubuntu 24.04 LTS (Noble Numbat)
-   - Size: `t3.small` (2 vCPU, 2 GB RAM + 2 GB Swap)
+   - Size: `t3.micro` (1 vCPU, 1 GB RAM + 2 GB Swap = ~3 GB effective memory)
    - 20 GB gp3 encrypted root volume
    - Automated bootstrap script (`user-data.sh`) installing Docker & Docker Compose.
 
