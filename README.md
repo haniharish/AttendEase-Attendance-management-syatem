@@ -1,6 +1,7 @@
 # AttendEase – Student Attendance Management System
 
 [![Live Demo](https://img.shields.io/badge/Live_Deployment-http%3A%2F%2F13.233.172.243-00c853?style=for-the-badge&logo=google-chrome&logoColor=white)](http://13.233.172.243)
+[![Download Word Synopsis](https://img.shields.io/badge/Project_Synopsis-Word_.docx-2B579A?logo=microsoft-word&logoColor=white)](docs/AttendEase_Project_Synopsis.docx)
 [![AWS Deployed](https://img.shields.io/badge/AWS-ap--south--1-FF9900?logo=amazon-aws&logoColor=white)](http://13.233.172.243)
 [![Terraform](https://img.shields.io/badge/IaC-Terraform_1.17-7B42BC?logo=terraform&logoColor=white)](terraform/)
 [![Docker](https://img.shields.io/badge/Docker-Compose_v5.8-2496ED?logo=docker&logoColor=white)](docker-compose.yml)
@@ -12,6 +13,8 @@
 
 > ### 🌐 **Live Hosted Application**: [http://13.233.172.243](http://13.233.172.243)
 > **Hosted 24/7 on AWS EC2 (`ap-south-1` Mumbai)** | **Fully Automated via Terraform & Docker**
+> 
+> 📄 **Project Documentation**: [Download Project Synopsis (.docx)](docs/AttendEase_Project_Synopsis.docx) | [View Synopsis (Markdown)](docs/PROJECT_SYNOPSIS.md)
 > 
 > **Quick Access Credentials**:
 > - 🛡️ **Administrator**: `admin@attendease.com` / `AdminPassword123!`
